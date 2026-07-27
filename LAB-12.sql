@@ -84,4 +84,138 @@ AUTHORID INT FOREIGN KEY REFERENCES AUTHOR(AUTHORID) NOT NULL ,
 PUBLISHERID INT FOREIGN KEY REFERENCES PUBLISHER(PUBLISHERID) NOT NULL, 
 PRICE DECIMAL(8,2) NOT NULL ,
 PUBLICATIONYEAR INT NOT NULL
-) 
+)       INSERT INTO PUBLISHER
+VALUES
+(1, 'RUPA PUBLICATIONS', 'NEW DELHI'),
+(2, 'PENGUIN INDIA', 'GURUGRAM'),
+(3, 'HARPERCOLLINS INDIA', 'NOIDA'),
+(4, 'ALEPH BOOK COMPANY', 'NEW DELHI');
+
+SELECT * FROM PUBLISHER
+
+INSERT INTO AUTHOR 
+VALUES
+(1, 'CHETAN BHAGAT', 'INDIA'),
+(2, 'ARUNDHATI ROY', 'INDIA'),
+(3, 'AMISH TRIPATHI', 'INDIA'),
+(4, 'RUSKIN BOND', 'INDIA'),
+(5, 'JHUMPA LAHIRI', 'INDIA'),
+(6, 'PAULO COELHO', 'BRAZIL'),
+(7, 'SUDHA MURTY', 'INDIA');
+
+SELECT * FROM AUTHOR
+
+INSERT INTO BOOK
+VALUES
+(101, 'FIVE POINT SOMEONE', 1, 1, 250.00, 2004),
+(102, 'THE GOD OF SMALL THINGS', 2, 2, 350.00, 1997),
+(103, 'IMMORTALS OF MELUHA', 3, 3, 300.00, 2010),
+(104, 'THE BLUE UMBRELLA', 4, 1, 180.00, 1980),
+(105, 'THE LOWLAND', 5, 2, 400.00, 2013),
+(106, 'REVOLUTION 2020', 1, 1, 275.00, 2011),
+(107, 'SITA: WARRIOR OF MITHILA', 3, 3, 320.00, 2017),
+(108, 'THE ROOM ON THE ROOF', 4, 4, 200.00, 1956);
+
+SELECT *FROM BOOK
+
+--Create STADIUM table with given constraints
+
+CREATE TABLE STADIUM(
+	Stadium_id INT PRIMARY KEY,
+	Stadium_name VARCHAR(200) NOT NULL UNIQUE,
+	Stadium_capacity INT NOT NULL,
+	Stadium_city VARCHAR(200) NOT NULL 
+);
+
+--Create TEAM table with given constraints
+CREATE TABLE TEAM(
+	TEAM_ID INT PRIMARY KEY,
+	TEAM_NAME VARCHAR(200) NOT NULL UNIQUE, 
+	TEAM_COACH VARCHAR(200) NOT NULL,
+	TEAM_WINS INT NOT NULL,
+	TEAM_TOTAL_MATCHES INT NULL, 
+	HOME_STADIUM_ID INT FOREIGN KEY REFERENCES STADIUM(STADIUM_ID) NULL
+);
+
+-- Create STADIUM Table
+CREATE TABLE STADIUM
+(
+    STADIUM_ID INT PRIMARY KEY,
+    STADIUM_NAME VARCHAR(200) NOT NULL,
+    STADIUM_CAPACITY INT NOT NULL,
+    STADIUM_CITY VARCHAR(100) NOT NULL
+);
+
+-- Create TEAM Table
+CREATE TABLE TEAM
+(
+    TEAM_ID INT PRIMARY KEY,
+    TEAM_NAME VARCHAR(200) NOT NULL,
+    TEAM_COACH VARCHAR(200) NOT NULL,
+    TEAM_WINS INT,
+    TEAM_TOTAL_MATCHES INT,
+    HOME_STADIUM_ID INT,
+    FOREIGN KEY (HOME_STADIUM_ID) REFERENCES STADIUM(STADIUM_ID)
+);
+
+-- Create PLAYER Table
+CREATE TABLE PLAYER
+(
+    PLAYER_ID INT PRIMARY KEY,
+    PLAYER_FIRST_NAME VARCHAR(200) NOT NULL,
+    PLAYER_LAST_NAME VARCHAR(200) NOT NULL,
+    TEAM_ID INT NULL,
+    PLAYER_ROLE VARCHAR(200) NULL,
+    PLAYER_JERSEY_NUMBER INT NOT NULL,
+    PLAYER_MATCHES_PLAYED INT NULL,
+    FOREIGN KEY (TEAM_ID) REFERENCES TEAM(TEAM_ID)
+);
+
+-- Insert Data into STADIUM
+INSERT INTO STADIUM VALUES
+(101,'Wankhede Stadium',55000,'Mumbai'),
+(102,'Chepauk Stadium',50000,'Chennai'),
+(103,'Chinnaswamy Stadium',45000,'Bangalore'),
+(104,'Eden Gardens',68000,'Kolkata'),
+(105,'Sawai Mansingh Stadium',30000,'Jaipur'),
+(106,'Arun Jaitley Stadium',42000,'Delhi'),
+(107,'Bindra Stadium',38000,'Mohali'),
+(108,'Rajiv Gandhi Stadium',55000,'Hyderabad');
+
+-- Insert Data into TEAM
+INSERT INTO TEAM VALUES
+(1,'Mumbai Indians','Mark Boucher',12,14,101),
+(2,'Chennai Super Kings','Stephen Fleming',10,14,102),
+(3,'Royal Challengers Bangalore','Faf du Plessis',9,14,103),
+(4,'Kolkata Knight Riders','Gautam Gambhir',11,14,104),
+(5,'Rajasthan Royals','Rahul Dravid',8,14,105),
+(6,'Delhi Capitals','Ricky Ponting',7,14,106),
+(7,'Punjab Kings','Anil Kumble',6,14,107),
+(8,'Sunrisers Hyderabad','Brian Lara',9,14,108);
+
+
+
+--Insert Data into PLAYER Table
+INSERT INTO PLAYER
+(PLAYER_ID, PLAYER_FIRST_NAME, PLAYER_LAST_NAME, TEAM_ID, PLAYER_ROLE, PLAYER_JERSEY_NUMBER, PLAYER_MATCHES_PLAYED)
+VALUES
+(201, 'Virat', 'Kohli', 3, 'Batsman', 18, 25),
+(202, 'Rohit', 'Sharma', 1, 'Batsman', 45, 28),
+(203, 'Jasprit', 'Bumrah', 1, 'Bowler', 93, 26),
+(204, 'MS', 'Dhoni', 2, 'Wicketkeeper', 7, 30),
+(205, 'Ravindra', 'Jadeja', 2, 'All-rounder', 8, 27),
+(206, 'Andre', 'Russell', 4, 'All-rounder', 12, 24),
+(207, 'Sanju', 'Samson', 5, 'Batsman', 11, 23),
+(208, 'Yuzvendra', 'Chahal', 5, 'Bowler', 3, 22),
+(209, 'Glenn', 'Maxwell', 3, 'All-rounder', 32, 21),
+(210, 'Sunil', 'Narine', 4, 'Bowler', 74, 29),
+(211, 'David', 'Warner', 6, 'Batsman', 31, 26),
+(212, 'Rishabh', 'Pant', 6, 'Wicketkeeper', 17, 24),
+(213, 'Kagiso', 'Rabada', 6, 'Bowler', 25, 23),
+(214, 'Shikhar', 'Dhawan', 7, 'Batsman', 42, 27),
+(215, 'Liam', 'Livingstone', 7, 'All-rounder', 23, 22),
+(216, 'Arshdeep', 'Singh', 7, 'Bowler', 2, 21),
+(217, 'Aiden', 'Markram', 8, 'Batsman', 4, 23),
+(218, 'Bhuvneshwar', 'Kumar', 8, 'Bowler', 15, 28),
+(219, 'Rahul', 'Tripathi', 8, 'Batsman', 52, 24),
+(220, 'Abdul', 'Samad', 8, 'All-rounder', 11, 29);
