@@ -1,0 +1,168 @@
+--From the table STADIUM, TEAM and PLAYER perform the following queries:  
+--Part – A: 
+--1. Display players who belong to teams located in ‘Mumbai’. 
+
+	SELECT * FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID=TEAM.TEAM_ID
+	INNER JOIN STADIUM
+	ON TEAM.HOME_STADIUM_ID=STADIUM.Stadium_id
+	WHERE STADIUM.Stadium_city='MUMBAI'
+
+--2. Display all teams and players. 
+
+	SELECT PLAYER.PLAYER_FIRST_NAME,TEAM.TEAM_NAME FROM TEAM
+	INNER JOIN PLAYER
+	ON PLAYER.TEAM_ID=TEAM.TEAM_ID
+
+--3. Display players along with team wins and stadium city. 
+
+	SELECT PLAYER_FIRST_NAME,TEAM.TEAM_WINS,STADIUM.Stadium_city FROM PLAYER 
+	INNER JOIN TEAM
+	ON TEAM.TEAM_ID=PLAYER.TEAM_ID
+	INNER JOIN STADIUM
+	ON TEAM.HOME_STADIUM_ID=STADIUM.Stadium_id
+
+
+--4. Display team name and number of players in each team. 
+
+	SELECT TEAM.TEAM_NAME,COUNT(*) FROM PLAYER
+	INNER JOIN TEAM
+	ON TEAM.TEAM_ID=PLAYER.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME
+
+--5. Display team name, coach, and number of bowlers in each team. 
+
+	SELECT TEAM.TEAM_NAME,TEAM.TEAM_COACH,COUNT(*) FROM PLAYER
+	INNER JOIN TEAM
+	ON TEAM.TEAM_ID=PLAYER.TEAM_ID
+	WHERE PLAYER_ROLE='Bowler'
+	GROUP BY TEAM.TEAM_NAME,TEAM.TEAM_COACH
+
+--6. Display team name with count of batsmen, bowlers, and all-rounders. 
+
+	SELECT TEAM.TEAM_NAME,COUNT((CASE WHEN PLAYER_ROLE='Batsman' THEN 1 ELSE NULL END)) AS BATSMEN,
+	COUNT((CASE WHEN PLAYER_ROLE='Bowler' THEN 1 ELSE NULL END)) AS BOWLERS,
+	COUNT((CASE WHEN PLAYER_ROLE='All-rounder' THEN 1 ELSE NULL END)) AS [ALL ROUNDERS] FROM PLAYER
+	INNER JOIN TEAM
+	ON TEAM.TEAM_ID=PLAYER.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME
+
+--7. Display stadiums where teams have won more than 10 matches. 
+
+	SELECT STADIUM.Stadium_name FROM TEAM
+	INNER JOIN STADIUM
+	ON STADIUM.Stadium_id=TEAM.HOME_STADIUM_ID
+	WHERE TEAM.TEAM_WINS>10
+
+--8. Display team name and number of players whose matches played is greater than 25.
+
+	SELECT COUNT(*),TEAM.TEAM_NAME FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID=TEAM.TEAM_ID
+	WHERE PLAYER_MATCHES_PLAYED > 25
+	GROUP BY TEAM_NAME
+
+--9. Display team name and total number of players having jersey number greater than 30. 
+
+	SELECT COUNT(*),TEAM.TEAM_NAME FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID=TEAM.TEAM_ID
+	WHERE PLAYER_JERSEY_NUMBER > 30
+	GROUP BY TEAM_NAME
+
+--10. Display team name and total matches played by its players.
+
+	SELECT TEAM.TEAM_NAME, SUM(PLAYER.PLAYER_MATCHES_PLAYED) AS TOTAL_MATCHES
+	FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID = TEAM.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME
+
+--Part – B: 
+--11. Display stadium city and total number of teams in each city. 
+
+	SELECT STADIUM.Stadium_city, COUNT(TEAM.TEAM_ID) AS TOTAL_TEAMS
+	FROM STADIUM
+	INNER JOIN TEAM
+	ON STADIUM.Stadium_id = TEAM.HOME_STADIUM_ID
+	GROUP BY STADIUM.Stadium_city
+
+--12. Display team name and average matches played by players in each team. 
+
+	SELECT TEAM.TEAM_NAME, AVG(PLAYER.PLAYER_MATCHES_PLAYED) AS AVG_MATCHES
+	FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID = TEAM.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME
+
+--13. Display team name and maximum matches played by any player in each team. 
+
+	SELECT TEAM.TEAM_NAME, MAX(PLAYER.PLAYER_MATCHES_PLAYED) AS MAX_MATCHES
+	FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID = TEAM.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME
+
+--14. Display team name and minimum matches played by any player in each team. 
+
+	SELECT TEAM.TEAM_NAME, MIN(PLAYER.PLAYER_MATCHES_PLAYED) AS MIN_MATCHES
+	FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID = TEAM.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME
+
+--15. Display stadium name and total number of players playing under teams of that stadium. 
+
+	SELECT STADIUM.Stadium_name, COUNT(PLAYER.PLAYER_FIRST_NAME) AS TOTAL_PLAYERS
+	FROM STADIUM
+	INNER JOIN TEAM
+	ON STADIUM.Stadium_id = TEAM.HOME_STADIUM_ID
+	INNER JOIN PLAYER
+	ON TEAM.TEAM_ID = PLAYER.TEAM_ID
+	GROUP BY STADIUM.Stadium_name	
+
+--Part – C: 
+--16. Display teams having more all-rounders than bowlers. 
+
+	SELECT TEAM.TEAM_NAME
+	FROM PLAYER
+	INNER JOIN TEAM
+	ON TEAM.TEAM_ID = PLAYER.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME
+	HAVING SUM(CASE WHEN PLAYER.PLAYER_ROLE = 'All-rounder' THEN 1 ELSE 0 END) > 
+		   SUM(CASE WHEN PLAYER.PLAYER_ROLE = 'Bowler' THEN 1 ELSE 0 END)
+
+--17. Display teams where difference between max and min player matches is greater than 5. 
+
+	SELECT TEAM.TEAM_NAME
+	FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID = TEAM.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME
+	HAVING (MAX(PLAYER.PLAYER_MATCHES_PLAYED) - MIN(PLAYER.PLAYER_MATCHES_PLAYED)) > 5
+
+--18. Display stadium city and total wins of teams in that city. 
+
+	SELECT STADIUM.Stadium_city, SUM(TEAM.TEAM_WINS) AS TOTAL_CITY_WINS
+	FROM STADIUM	
+	INNER JOIN TEAM
+	ON STADIUM.Stadium_id = TEAM.HOME_STADIUM_ID
+	GROUP BY STADIUM.Stadium_city
+
+--19. Display team name and total number of players for each role (grouped by role). 
+
+	SELECT TEAM.TEAM_NAME, PLAYER.PLAYER_ROLE, COUNT(*) AS TOTAL_PLAYERS
+	FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID = TEAM.TEAM_ID
+	GROUP BY TEAM.TEAM_NAME, PLAYER.PLAYER_ROLE
+
+--20. Display team name and total number of players whose name starts with ‘A’ 
+
+	SELECT TEAM.TEAM_NAME, COUNT(*) AS TOTAL_PLAYERS
+	FROM PLAYER
+	INNER JOIN TEAM
+	ON PLAYER.TEAM_ID = TEAM.TEAM_ID
+	WHERE PLAYER.PLAYER_FIRST_NAME LIKE 'A%'
+	GROUP BY TEAM.TEAM_NAME
